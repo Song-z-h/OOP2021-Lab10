@@ -1,6 +1,5 @@
 package it.unibo.oop.lab.lambda.ex02;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +52,7 @@ public final class MusicGroupImpl implements MusicGroup {
 		// albumName can be absent since is optional, so check it with isPresent before
 		// working on it.
 		return (int) songs.stream().filter(s -> s.getAlbumName().isPresent())
-				.filter(s -> s.getSongName().equals(albumName)).count();
+				.filter(s -> s.getAlbumName().equals(Optional.ofNullable(albumName))).count();
 	}
 
 	@Override
@@ -70,13 +69,16 @@ public final class MusicGroupImpl implements MusicGroup {
 
 	@Override
 	public Optional<String> longestSong() {
-		return songs.stream().collect(Collectors.maxBy(Comparator.comparingDouble(x -> x.getDuration())))
-				.map(Song::getAlbumName).get();
+		return Optional
+				.ofNullable(songs.stream().collect(Collectors.maxBy(Comparator.comparingDouble(x -> x.getDuration())))
+						.map(Song::getSongName).get());
 	}
 
 	@Override
 	public Optional<String> longestAlbum() {
-		return null;
+		return songs.stream()
+				.collect(Collectors.groupingBy(Song::getAlbumName, Collectors.summarizingDouble(Song::getDuration)))
+				.entrySet().stream().collect(Collectors.maxBy(Comparator.comparingDouble(???))).get().getKey();
 	}
 
 	private static final class Song {
