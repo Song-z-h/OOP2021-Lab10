@@ -38,15 +38,15 @@ import javax.swing.JTextArea;
 public final class LambdaFilter extends JFrame {
 
 	private static final long serialVersionUID = 1760990730218643730L;
-	
+	private static final String PATTERN = "(\\s|\\p{Punct})+";	
 	
 	private enum Command {
 		IDENTITY("No modifications", Function.identity()),
 		LOWERCASE("LowerCase", a -> a.toLowerCase()),
 		COUNTCHARS("Count Number of Chars", a -> Integer.toString(a.length())),
 		COUNTLINES("Count Number of Lines", a -> Long.toString(a.lines().count())),
-		ORDER("Alphabetical Order", a -> Arrays.asList(a.split(" ")).stream().sorted().collect(Collectors.joining(" "))),
-		COUNTEACHWORD("Count each word", a -> Arrays.stream(a.split(" "))
+		ORDER("Alphabetical Order", a -> Arrays.asList(a.split(PATTERN)).stream().sorted().collect(Collectors.joining(" "))),
+		COUNTEACHWORD("Count each word", a -> Arrays.stream(a.split(PATTERN))
 				.collect(Collectors.groupingBy(b -> b, Collectors.counting())).entrySet().stream()
 				.map(entry -> entry.getKey() + " -> " + entry.getValue()).collect(Collectors.joining("\n")));
 		
